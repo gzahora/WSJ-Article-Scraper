@@ -1,27 +1,43 @@
-<div id="home">
-  <div class="container">
-    <div class="row">
-      <div class="col-8 offset-2">
-        <h2>Saved Articles</h2>
-        <form class="clearfix mb-4" action="POST">
-          <div class="form-group">
-            <label for="example-text">Example Text</label>
-            <input type="text" id="example-text" class="form-control" aria-describedby="example-text" placeholder="Enter Example Text">
-          </div>
-          <div class="form-group">
-            <label for="example-description">Example Description</label>
-            <textarea class="form-control" id="example-description" aria-describedby="example-description" placeholder="Enter Example Description"></textarea>
-          </div>
-          <button id="submit" class="btn btn-primary float-right">Submit</button>
-        </form>
-        <h3>Examples:</h3>
-        <div id="articles"></div>
-        <div id="notes"></div>
-        </ul>
-      </div>
-    </div>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="/">WSJ Article Scraper</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
+    aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link mr-1" href="/">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link mr-1" href="/saved">Saved Articles</a>
+      </li>
+    </ul>
   </div>
+</nav>
+<div class="jumbotron text-center">
+  <h1 class="display-2 mb-2">WSJ Article Scraper</h1>
+  <p class="lead">Scrape articles or clear the database to get started.</p>
+  <a class="btn btn-primary btn-lg text-white mr-3" id="scrape" href="/scrape">Scrape articles</a>
+  <a class="btn btn-danger btn-lg text-white" id="clear" href="/clear">Clear Articles</a>
 </div>
+
+{{#each articles}}
+<div class="containter ml-5">
+    <div class="col-4" style="float: left">
+
+            <div class="card-body" style="width: 22rem; height: 22rem;">
+                <h3 class="card-title">{{this.title}}</h4>
+                <p class="card-subtitle mb-2 py-1">Summary: {{this.summary}}</p>
+                <a class="btn btn-sm btn-success" href={{this.link}}>Article Link</a>
+                &nbsp;&nbsp;
+                <a class="btn btn-sm btn-success" id="unSaveArticle" href="/remove">Remove Article</a>
+            </div>
+
+    </div>
+</div>
+{{/each}}
 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="app.js"></script>
+<script src="../controller/routes.js"></script>

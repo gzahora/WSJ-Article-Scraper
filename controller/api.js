@@ -7,22 +7,22 @@ var cheerio = require("cheerio");
 // Require all models
 var db = require("../models");
 
-// A GET route for scraping the echoJS website
+// A GET route for scraping the WSJ site
 app.get("/scrape", function(req, res) {
     // First, we grab the body of the html with axios
     axios.get("http://www.wsj.com/").then(function(response) {
       // Then, we load that into cheerio and save it to $ for a shorthand selector
       var $ = cheerio.load(response.data);
   
-      // Now, we grab every h2 within an article tag, and do the following:
+      // Now, we grab every data within an article tag, and do the following:
       $("article").each(function(i, element) {
         // Save an empty result object
-        // if (i < 10) {
         var result = {};
   
         // Add the text and href of every link, and save them as properties of the result object
         result.title = $(this)
-          .children()
+          .find("h3")
+          .find("a")
           .text();
         result.link = $(this)
           .find("a")
@@ -35,55 +35,88 @@ app.get("/scrape", function(req, res) {
         db.Article.create(result)
           .then(function(dbArticle) {
             // View the added result in the console
-            console.log(dbArticle);
+            // console.log(dbArticle);
           })
           .catch(function(err) {
             // If an error occurred, log it
-            console.log(err);
+            // console.log(err);
           });
-        // }
       });
-    
-      // Send a message to the client
-      res.send("Scrape Complete");
+      res.redirect("/")
     });
   });
-  
-  
-  app.get("/", function(req, res){
-    res.render("index")
-  });
-  
-  app.get("/saved", function(req, res){
-    res.render("saved")
-  });
-  
-  
+
+
+
   // Route for getting all Articles from the db
-  app.get("/articles", function(req, res) {
+  app.get("/", function(req, res) {
     // TODO: Finish the route so it grabs all of the articles
     db.Article.find({})
     .then(function(dbArticle) {
       // If all Notes are successfully found, send them back to the client
-      res.json(dbArticle);
+      var hbsObject;
+      hbsObject = {articles: dbArticle}
+
+      res.render("index", hbsObject)
+
+      // res.json(dbArticle);
     })
     .catch(function(err) {
       // If an error occurs, send the error back to the client
       res.json(err);
     });
   });
+
+  // Route for getting all Articles from the db
+  app.get("/saved", function(req, res) {
+    // TODO: Finish the route so it grabs all of the articles
+    db.Article.find({"saved": true})
+    .then(function(dbArticle) {
+      // If all Notes are successfully found, send them back to the client
+      var hbsSaved;
+      hbsSaved = {articles: dbArticle}
+
+      res.render("saved", hbsSaved)
+
+      // res.json(dbArticle);
+    })
+    .catch(function(err) {
+      // If an error occurs, send the error back to the client
+      res.json(err);
+    });
+  });
+
+  app.put("/save/:id", function (req, res) {
+    db.Article.findOneAndUpdate({ _id: req.params.id }, { saved: true })
+        .then(function (data) {
+            // If we were able to successfully find Articles, send them back to the client
+            res.json(data);
+        })
+        .catch(function (err) {
+            // If an error occurred, send it to the client
+            res.json(err);
+            res.redirect("/")
+        });;
+  });
   
+  app.put("/remove/:id", function (req, res) {
+    db.Article.findOneAndUpdate({ _id: req.params.id }, { saved: false })
+        .then(function (data) {
+            // If we were able to successfully find Articles, send them back to the client
+            res.json(data)
+        })
+        .catch(function (err) {
+            // If an error occurred, send it to the client
+            res.json(err);
+            res.redirect("/")
+        });
+});
+
   // Route for grabbing a specific Article by id, populate it with it's note
   app.get("/articles/:id", function(req, res) {
-    // TODO
-    // ====
-    // Finish the route so it finds one article using the req.params.id,
-    // and run the populate method with "note",
-    // then responds with the article with the note included
+
     db.Article.findOne(
-      {
-        _id: req.params.id
-      })
+      { _id: req.params.id })
       .populate("note")
       .then(function(dbArticle) {
         // If any Libraries are found, send them to the client with any associated Books
@@ -97,11 +130,6 @@ app.get("/scrape", function(req, res) {
   
   // Route for saving/updating an Article's associated Note
   app.post("/articles/:id", function(req, res) {
-    // TODO
-    // ====
-    // save the new note that gets posted to the Notes collection
-    // then find an article from the req.params.id
-    // and update it's "note" property with the _id of the new note
     db.Note.create(req.body)
     .then(function(dbNote) {
       // If a Note was created successfully, find one Article (there's only one) and push the new Note's _id to the Article's `notes` array
