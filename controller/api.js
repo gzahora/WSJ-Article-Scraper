@@ -134,7 +134,7 @@ app.get("/articles/:id", function (req, res) {
 });
 
 app.put("/articles/:id", function (req, res) {
-  db.Article.findOneAndUpdate({ _id: req.params.id } , {$set: { author: author, body: body }})
+  db.Article.findOneAndUpdate({ _id: req.params.id }, {$set: { author: author, body: body }})
     .then(function (data) {
       // If we were able to successfully find Articles, send them back to the client
       res.json(data)
@@ -150,9 +150,7 @@ app.put("/articles/:id", function (req, res) {
 app.post("/articles/:id", function (req, res) {
   db.Note.create(req.body)
     .then(function (dbNote) {
-      // If a Note was created successfully, find one Article (there's only one) and push the new Note's _id to the Article's `notes` array
-      // { new: true } tells the query that we want it to return the updated User -- it returns the original by default
-      // Since our mongoose query returns a promise, we can chain another `.then` which receives the result of the query
+
       return db.Article.findOneAndUpdate({ _id: req.params.id }, { $push: { note: dbNote._id } }, { new: true });
     })
     .then(function (dbArticle) {
