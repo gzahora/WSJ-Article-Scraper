@@ -31,7 +31,7 @@
                 <p class="card-subtitle mb-2 py-1">Summary: {{this.summary}}</p>
                 <a class="btn btn-sm btn-success" href={{this.link}}>Article Link</a>
                 &nbsp;&nbsp;
-                <a class="btn btn-sm btn-success" id="saveArticle" href="/save">Save Article</a>
+                <a class="btn btn-sm btn-success saveArticle" data-id={{this._id}} href="/save">Save Article</a>
             </div>
 
     </div>
@@ -39,5 +39,3 @@
 {{/each}}
 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="app.js"></script>
-<script src="../controller/api.js"></script>
