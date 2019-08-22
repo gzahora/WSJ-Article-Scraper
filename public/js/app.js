@@ -1,6 +1,7 @@
 $(function () {
   $("#scrape").on("click", function () {
     event.preventDefault();
+    console.log("scraping...");
     $.ajax({
       method: "GET",
       url: "/scrape",
@@ -9,48 +10,59 @@ $(function () {
     })
   });
 
-  $("#clear").on("click", function (event) {
+  // $("#clear").on("click", function (event) {
+  //   event.preventDefault();
+  //   $.ajax({
+  //     url: "/scrape",
+  //     type: "DELETE"
+  //   }).then(function () {
+  //     location.reload();
+  //   })
+  // })
+
+  $(".saveArticle").on("click", function (event) {
     event.preventDefault();
+    var id = $(this).attr("data-id")
+    console.log(id);
+
     $.ajax({
-      url: "/scrape",
-      type: "DELETE"
+      url: "save/" + id,
+      type: "PUT",
+      data: { saved: true }
+    }).then(function () {
+    });
+  });
+
+  $(".unSaveArticle").on("click", function (event) {
+    event.preventDefault();
+    var id = $(this).attr("data-id")
+    console.log(id);
+    $.ajax({
+      url: "remove/" + id,
+      type: "PUT",
+      data: { saved: false }
     }).then(function () {
       location.reload();
-    })
-  })
+    });
+  });
 
-  $(".saveArticle").on("click", function(event) {
+  $(document).on("click", ".note", function () {
+    // Empty the notes from the note section
+    $("#notes").empty();
+    // Save the id from the p tag
+    var thisId = $(this).attr("data-id");
+    $("#comments-" + thisId).modal("show");
+  });
+
+  $(document).on("click", ".saveNote", function (event) {
     event.preventDefault();
     var id = $(this).attr("data-id")
     $.ajax({
-        url: "save/" + id,
-        type: "PUT",
-        data: {saved: true}
-    }).then(function() {
-        location.reload();
+      url: "articles/" + id,
+      type: "PUT",
+      data: { author: $("#author").val(), body: $("#body").val() }
+    }).then(function () {
+      location.reload();
     });
-});
-
-$(".unSaveArticle").on("click", function(event) {
-    event.preventDefault();
-    var id = $(this).attr("data-id")
-    $.ajax({
-        url: "remove/" + id,
-        type: "PUT",
-        data: {saved: false}
-    }).then(function() {
-        location.reload();
-    });
-});
-  
-  
-    // Whenever someone clicks a p tag
-    $(document).on("click", ".note", function () {
-      // Empty the notes from the note section
-      $("#notes").empty();
-      // Save the id from the p tag
-      var thisId = $(this).attr("data-id");
-      
-
-    });
+  });
 });

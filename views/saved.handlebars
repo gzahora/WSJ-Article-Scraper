@@ -22,35 +22,47 @@
 
 {{#each articles}}
 <div class="containter ml-5">
-    <div class="col-4" style="float: left">
+  <div class="col-4" style="float: left">
 
-            <div class="card-body" style="width: 22rem; height: 22rem;">
-                <h3 class="card-title">{{this.title}}</h4>
-                <p class="card-subtitle mb-2 py-1">Summary: {{this.summary}}</p>
-                <a class="btn btn-sm btn-success" href={{this.link}}>Article Link</a>
-                &nbsp;
-                <a class="btn btn-sm btn-success unSaveArticle" data-id={{this._id}}  href="/remove">Remove Article</a>
-                &nbsp;
-                <button class="btn btn-sm btn-success note" data-toggle="modal" data-target="#"{{this._id}} data-id={{this._id}} >Add Note</button>
-            </div>
-
+    <div class="card-body" style="width: 22rem; height: 22rem;">
+      <h3 class="card-title">{{this.title}}</h4>
+        <p class="card-subtitle mb-2 py-1">Summary: {{this.summary}}</p>
+        <a class="btn btn-sm btn-success" href={{this.link}}>Article Link</a>
+        &nbsp;
+        <button class="btn btn-sm btn-success unSaveArticle" data-id={{this._id}}>Remove Article</button>
+        &nbsp;
+        <button class="btn btn-sm btn-success note" data-toggle="modal" data-target="#comments-{{this._id}}"
+          data-id={{this._id}}>Add Note</button>
     </div>
+
+  </div>
 </div>
-<div class="modal fade" id={{this._id}} tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+<div class="modal fade" id="comments-{{this._id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <h5 class="modal-title" id="exampleModalLabel">{{this.title}}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        ...
       </div>
       <div class="modal-footer">
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="author name" id="author" data-id="author">
+            </div>
+            <div class="form-group">
+              <textarea class="form-control" rows="3" placeholder="write here" id="body" data-id="body"></textarea>
+            </div>
+          </form>
+        </div>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-primary saveNote" data-id={{this._id}}>Save changes</button>
       </div>
     </div>
   </div>

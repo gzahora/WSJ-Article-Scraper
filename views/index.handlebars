@@ -17,9 +17,8 @@
 </nav>
 <div class="jumbotron text-center">
   <h1 class="display-2 mb-2">WSJ Article Scraper</h1>
-  <p class="lead">Scrape articles or clear the database to get started.</p>
+  <p class="lead">Scrape articles to get started.</p>
   <a class="btn btn-primary btn-lg text-white mr-3" id="scrape" href="/scrape">Scrape articles</a>
-  <button class="btn btn-danger btn-lg text-white" id="clear" href="/clear">Clear Articles</button>
 </div>
 
 {{#each articles}}
@@ -29,9 +28,9 @@
             <div class="card-body" style="width: 22rem; height: 22rem;">
                 <h3 class="card-title">{{this.title}}</h4>
                 <p class="card-subtitle mb-2 py-1">Summary: {{this.summary}}</p>
-                <a class="btn btn-sm btn-success" href={{this.link}}>Article Link</a>
+                <a class="btn btn-sm btn-success" href={{this.link}} >Article Link</a>
                 &nbsp;&nbsp;
-                <a class="btn btn-sm btn-success saveArticle" data-id={{this._id}} href="/save">Save Article</a>
+                <button class="btn btn-sm btn-success saveArticle" data-id={{this._id}}>Save Article</button>
             </div>
 
     </div>
